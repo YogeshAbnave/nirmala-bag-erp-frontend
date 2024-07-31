@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 // import { Product } from '@domain/product';
 // import { ProductService } from '@service/productservice';
@@ -19,6 +19,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { RatingModule } from 'primeng/rating';
 import { FormsModule } from '@angular/forms';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { EmployeeService } from '../employee.service';
+import { Table } from 'primeng/table';
 
 interface Product {
   id?: string;
@@ -31,33 +33,43 @@ interface Product {
   rating?: number;
 }
 
-class ProductService {
-  getProducts() {
-      return Promise.resolve([
-          { id: '1000', name: 'Product 1', description: 'Product 1 Description', price: 100, category: 'Category 1', quantity: 24, inventoryStatus: 'INSTOCK', rating: 5 },
-          { id: '1001', name: 'Product 2', description: 'Product 2 Description', price: 200, category: 'Category 2', quantity: 0, inventoryStatus: 'OUTOFSTOCK', rating: 4 },
-          // Add more dummy products as needed
-      ]);
-  }
-}
+
 
 @Component({
   selector: 'app-employee',
   standalone: true,
-    imports: [TableModule, DialogModule, RippleModule, ButtonModule, ToastModule, ToolbarModule, ConfirmDialogModule, InputTextModule, InputTextareaModule, CommonModule, FileUploadModule, DropdownModule, TagModule, RadioButtonModule, RatingModule, InputTextModule, FormsModule, InputNumberModule],
-    providers: [MessageService, ConfirmationService],
-    styles: [
-        `:host ::ng-deep .p-dialog .product-image {
-            width: 150px;
-            margin: 0 auto 2rem auto;
-            display: block;
-        }`
-    ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    TableModule,
+    DialogModule,
+    RippleModule,
+    ButtonModule,
+    ToastModule,
+    ToolbarModule,
+    ConfirmDialogModule,
+    InputTextModule,
+    InputTextareaModule,
+    FileUploadModule,
+    DropdownModule,
+    TagModule,
+    RadioButtonModule,
+    RatingModule,
+    InputNumberModule
+  ],
+  providers: [MessageService, ConfirmationService],
+  styles: [
+    `:host ::ng-deep .p-dialog .product-image {
+      width: 150px;
+      margin: 0 auto 2rem auto;
+      display: block;
+    }`
+  ],
   templateUrl: './employee.component.html',
-  styleUrl: './employee.component.css'
+  styleUrls: ['./employee.component.css']
 })
 export class EmployeeComponent implements OnInit{
-
+    @ViewChild('dt') table!: Table;
   productDialog: boolean = false;
 
     products!: Product[];
@@ -70,10 +82,10 @@ export class EmployeeComponent implements OnInit{
 
     statuses!: any[];
 
-    constructor(private productService: ProductService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
+    constructor(private employeeService: EmployeeService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
 
     ngOnInit() {
-        this.productService.getProducts().then((data) => (this.products = data));
+        this.employeeService.getProducts().then((data) => (this.products = data));
 
         this.statuses = [
             { label: 'INSTOCK', value: 'instock' },
@@ -87,6 +99,12 @@ export class EmployeeComponent implements OnInit{
         this.submitted = false;
         this.productDialog = true;
     }
+
+    applyFilterGlobal(event: Event) {
+        const input = event.target as HTMLInputElement;
+        const value = input.value;
+        this.table.filterGlobal(value, 'contains');
+      }
 
     deleteSelectedProducts() {
         this.confirmationService.confirm({
@@ -165,15 +183,19 @@ export class EmployeeComponent implements OnInit{
         return id;
     }
 
-    getSeverity(status: string) {
+    getSeverity(status: string): "success" | "warning" | "danger" | undefined {
         switch (status) {
-            case 'INSTOCK':
-                return 'success';
-            case 'LOWSTOCK':
-                return 'warning';
-            case 'OUTOFSTOCK':
-                return 'danger';
+          case 'INSTOCK':
+            return 'success';
+          case 'LOWSTOCK':
+            return 'warning';
+          case 'OUTOFSTOCK':
+            return 'danger';
+          default:
+            return undefined;
         }
-    }
+      }
 
 }
+
+

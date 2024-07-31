@@ -63,3 +63,7 @@
     color: #5B5B98;
     text-decoration: none;
 }
+.menu-item .menu-link.active {
+    color: #007bff; /* Change to your active color */
+    font-weight: bold; /* Example style */
+  }

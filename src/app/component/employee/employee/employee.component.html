@@ -23,8 +23,8 @@
                 <h5 class="m-0">Manage Products</h5>
                 <span class="p-input-icon-left">
                     <i class="pi pi-search"></i>
-                    <input pInputText type="text" 
-                        placeholder="Search..." />
+                    <input pInputText type="text" (input)="applyFilterGlobal($event)"
+                    placeholder="Search..." />
                 </span>
             </div>
         </ng-template>
