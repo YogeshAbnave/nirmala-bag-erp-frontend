@@ -1,0 +1,65 @@
+.sidebar_main {
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transition: all ease 0.5s;
+    padding: 15px 15px 150px 15px;
+    background-color: #fff;
+}
+
+.sidebar_menu_list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.sidebar_menu_list .menu-link {
+    font-size: 14px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    color: #260944;
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.sidebar_menu_list .menu-item .menu-link:hover,
+.sidebar_menu_list .menu-item .menu-link.active {
+    background-color: #f5f5f9;
+    color: #757FEF;
+    cursor: pointer;
+}
+
+.sidebar_menu_list .menu-item .menu-link:hover svg,
+.sidebar_menu_list .menu-item .menu-link.active svg {
+    stroke: #757FEF;
+}
+
+.sidebar_main .admin-info {
+    padding: 15px 30px;
+    position: fixed;
+    width: 250px;
+    left: 0;
+    bottom: 0;
+    transition: all ease 0.5s;
+    background-color: #fff;
+    border-top: 1px solid #f6f6f6;
+}
+
+.sidebar_main .admin-info .side_profile_img img{
+    height: 50px;
+    width: 50px;
+    border-radius: 50px;
+    object-fit: cover;
+    margin-right: 10px;
+}
+
+.sidebar_main .admin-info a {
+    font-size: 14px;
+    color: #5B5B98;
+    text-decoration: none;
+}
