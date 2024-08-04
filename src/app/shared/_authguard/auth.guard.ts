@@ -8,12 +8,15 @@ import { CommonService } from '../_services/common.service';
 })
 export class AuthGuard implements CanActivateChild {
 
-  constructor (private _commonService: CommonService, private router: Router) { }
+  constructor (private _commonService: CommonService, private router: Router) {
+    console.log("abc")
+   }
   
   canActivateChild(
     childRoute: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
      if (this._commonService.getSession() && this._commonService.getSession().token) {
+      console.log("abc", this._commonService.getSession() )
         return true;
       } else {
         this.router.navigate(['/login']);
@@ -28,12 +31,15 @@ export class AuthGuard implements CanActivateChild {
 })
 export class LoginGuard implements CanActivateChild {
 
-  constructor(private _commonService: CommonService, private router: Router) { }
+  constructor(private _commonService: CommonService, private router: Router) { 
+    console.log("abcdef", this._commonService.getSession() )
+  }
 
   canActivateChild(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       if (this._commonService.getSession() && this._commonService.getSession().token) {
+        console.log("abcdef", this._commonService.getSession().token )
         this.router.navigate(['/dashboard']);
         return false;
       } else return true;

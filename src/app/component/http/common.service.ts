@@ -1,8 +1,8 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
-import { HttpService } from './http/http.service';
+import { HttpService } from './http.service';
 import { Router } from '@angular/router';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+
+// import { ToastrService } from 'ngx-toastr';
 import moment from 'moment';
 import { environment } from '../../../environments/environment';
 
@@ -75,7 +75,7 @@ export class  CommonService {
     { name: "December", shortName: "Dec", value: 11 }
   ]
 
-  constructor( private httpClient: HttpClient, private _httpService: HttpService, private router: Router) { }
+  constructor(private _httpService: HttpService, private router: Router) { }
 
 
 
@@ -112,7 +112,7 @@ export class  CommonService {
 
 
   getSession() {
-    return JSON.parse(this.decode(window.localStorage.getItem("nirmala-bag-erp")));
+    return JSON.parse(this.decode(window.localStorage.getItem("ship-it-pro-session")));
   }
 
   getUserId() {
@@ -145,7 +145,7 @@ export class  CommonService {
   }
 
   deleteSession() {
-    localStorage.removeItem("nirmala-bag-erp");
+    localStorage.removeItem("ship-it-pro-session");
     this.router.navigate(['/login']);
   }
 
@@ -212,28 +212,28 @@ export class  CommonService {
   toggleClicked(params:any){
     this.aClickedEvent.emit(params);
   }
+  // Historical view nodeIds session
+  // setNodeIdsSession(sessionData: any) {
+  //   sessionStorage.setItem("kpi-karta-nodeIds-session", this.encode(JSON.stringify(sessionData)));
+  // }
+  // getNodeIdsSession() {
+  //   return JSON.parse(this.decode(sessionStorage.getItem("kpi-karta-nodeIds-session")));
+  // }
+
+
 
 /*============================== API FUNCTIONS STARTS ==============================*/
   // Login apis
-  // login(data: any) {
-  //   return this._httpService.POST('/admin/login', data);
-  // }
-
-  login(data: any): Observable<any> {
-    const url = `${this.BASE_URL}/api/admin/login`;
-    return this.httpClient.post(url, data);
+  login(data: any) {
+    return this._httpService.POST('/users/login?include=user', data);
   }
 
   resetPasswordOtp(data: any) {
     return this._httpService.POST('/users/email-otp-validation', data);
   }
 
-  logout(): Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${this.getSession().token}`
-    });
-    return this.httpClient.get(this.BASE_URL+'/api/admin/logout', {headers});
+  logout() {
+    return this._httpService.POST(`/users/logout?access_token=${this.getSession().token}`);
   }
 
   forgotPassword(data: any) {
@@ -266,12 +266,12 @@ export class  CommonService {
   }
 
   errorToaster(message: any) {
-    if (this.toasterErrorStatus) {
-      this.toasterErrorStatus = false;
-      // this.toastr.error(message);
-      setTimeout(() => {
-        this.toasterErrorStatus = true;
-      }, 2000);
-    }
+    // if (this.toasterErrorStatus) {
+    //   this.toasterErrorStatus = false;
+    //   this.toastr.error(message);
+    //   setTimeout(() => {
+    //     this.toasterErrorStatus = true;
+    //   }, 2000);
+    // }
   }
 }

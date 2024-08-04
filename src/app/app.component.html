@@ -1,13 +1,15 @@
+<!-- Show header and sidebar when applicable -->
 <div *ngIf="showHeaderAndSidebar">
-    <div class="d-flex">
-      <app-sidebar></app-sidebar>  <!-- Use SidebarComponent -->
-      <div class="main content">
-        <app-header></app-header>  <!-- Use HeaderComponent -->
-        <router-outlet></router-outlet>  <!-- Angular Router Outlet -->
-      </div>
+  <div class="d-flex">
+    <app-sidebar *ngIf="showSidebar"></app-sidebar>  <!-- SidebarComponent -->
+    <div class="main content">
+      <app-header *ngIf="showHeaderAndSidebar"></app-header>  <!-- HeaderComponent -->
+      <router-outlet></router-outlet>  <!-- Angular Router Outlet -->
     </div>
   </div>
-  <div *ngIf="!showHeaderAndSidebar">
-    <router-outlet></router-outlet>  <!-- Angular Router Outlet for login route -->
-  </div>
-  
+</div>
+
+<!-- Show only router-outlet for routes like /login -->
+<div *ngIf="!showHeaderAndSidebar">
+  <router-outlet></router-outlet>  <!-- Angular Router Outlet for login route -->
+</div>
