@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-// import { Product } from '@domain/product';
-// import { ProductService } from '@service/productservice';
 import { TableModule } from 'primeng/table';
 import { DialogModule } from 'primeng/dialog';
 import { RippleModule } from 'primeng/ripple';
@@ -70,16 +68,11 @@ interface Product {
 })
 export class EmployeeComponent implements OnInit{
     @ViewChild('dt') table!: Table;
-  productDialog: boolean = false;
-
+    productDialog: boolean = false;
     products!: Product[];
-
     product!: Product;
-
     selectedProducts!: Product[] | null;
-
     submitted: boolean = false;
-
     statuses!: any[];
 
     constructor(private employeeService: EmployeeService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
