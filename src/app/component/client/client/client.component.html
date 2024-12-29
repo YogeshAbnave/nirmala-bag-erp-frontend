@@ -30,7 +30,7 @@
 
   <p-table #dt [value]="products" [rows]="10" [paginator]="true"
       [globalFilterFields]="['name', 'email', 'mobile', 'status']"
-      [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+       [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
       <ng-template pTemplate="caption">
           <div class="flex align-items-center justify-content-between">

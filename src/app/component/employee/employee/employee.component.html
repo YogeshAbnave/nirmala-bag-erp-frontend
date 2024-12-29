@@ -1,169 +1,188 @@
 <div class="card">
     <p-toast />
-    <p-toolbar styleClass="mb-4 gap-2">
+    <p-toolbar styleClass="gap-2">
         <ng-template pTemplate="left">
-            <p-button severity="success" label="New" icon="pi pi-plus" class="mr-2" (onClick)="openNew()" />
-            <p-button severity="danger" label="Delete" icon="pi pi-trash" (onClick)="deleteSelectedProducts()"
-                [disabled]="!selectedProducts || !selectedProducts.length" />
+            <div class="flex align-items-center justify-content-between">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal($event)" placeholder="Search..." />
+                </span>
+            </div>
+
         </ng-template>
 
         <ng-template pTemplate="right">
-            <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import"
-                class="mr-2 inline-block" />
-            <p-button severity="help" label="Export" icon="pi pi-upload" />
+            <button onClick="openNew()"
+                class="border-0 btn btn-primary py-2 px-3 px-sm-4 text-white fs-14 fw-semibold rounded-3"
+                data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                <span class="py-sm-1 gap-2 d-flex">
+                    <i class="pi pi-plus"></i>
+                    <span>Add New Employee</span>
+                </span>
+            </button>
         </ng-template>
     </p-toolbar>
 
-    <p-table #dt [value]="products" [rows]="10" [paginator]="true"
+    <p-table #dt [value]="employees" [rows]="10" [paginator]="true"
         [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
-        [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedProducts" [rowHover]="true" dataKey="id"
+        [(selection)]="selectedEmployees" [rowHover]="true" dataKey="id"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" [showCurrentPageReport]="true">
-        <ng-template pTemplate="caption">
-            <div class="flex align-items-center justify-content-between">
-                <h5 class="m-0">Manage Products</h5>
-                <span class="p-input-icon-left">
-                    <i class="pi pi-search"></i>
-                    <input pInputText type="text" (input)="applyFilterGlobal($event)"
-                    placeholder="Search..." />
-                </span>
-            </div>
-        </ng-template>
+
         <ng-template pTemplate="header">
             <tr>
-                <th style="width: 4rem">
-                    <p-tableHeaderCheckbox />
-                </th>
-                <th pSortableColumn="name" style="min-width:15rem">
+                <th pSortableColumn="name">
                     Name <p-sortIcon field="name" />
                 </th>
-                <th>
-                    Image
+                <th pSortableColumn="designation">
+                    Designation <p-sortIcon field="designation" />
                 </th>
-                <th pSortableColumn="price">
-                    Price <p-sortIcon field="price" />
+                <th pSortableColumn="joiningDate">
+                    Joining Date <p-sortIcon field="joiningDate" />
                 </th>
-                <th pSortableColumn="category" style="min-width:10rem">
-                    Category <p-sortIcon field="category" />
-                </th>
-                <th pSortableColumn="rating">
-                    Reviews <p-sortIcon field="rating" />
-                </th>
-                <th pSortableColumn="inventoryStatus" style="min-width:10rem">
-                    Status <p-sortIcon field="inventoryStatus" />
+                <th pSortableColumn="status">
+                    Status <p-sortIcon field="status" />
                 </th>
                 <th></th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-product>
+        <ng-template pTemplate="body" let-employee>
             <tr>
                 <td>
-                    <p-tableCheckbox [value]="product" />
+                    {{employee.fisrtName}} {{employee.lastName}}
                 </td>
                 <td>
-                    {{ product.name }}
+                    {{ employee.designation }}
                 </td>
                 <td>
-                    <img [src]="'https://primefaces.org/cdn/primeng/images/demo/product/' + product.image"
-                        [alt]="product.name" width="50" class="shadow-4" />
+                    {{ employee.joiningDate }}
                 </td>
                 <td>
-                    {{ product.price | currency : 'USD' }}
+                    {{ employee.status }}
                 </td>
                 <td>
-                    {{ product.category }}
-                </td>
-                <td>
-                    <p-rating [(ngModel)]="product.rating" [readonly]="true" [cancel]="false" />
-                </td>
-                <td>
-                    <p-tag [value]="product.inventoryStatus" [severity]="getSeverity(product.inventoryStatus)" />
-                </td>
-                <td>
-                    <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" severity="success"
-                        (onClick)="editProduct(product)" />
-                    <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
-                        (onClick)="deleteProduct(product)" />
+                    <div class="grid-btns">
+                        <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" severity="success"
+                            (onClick)="editEmployee(employee)" />
+                        <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                            (onClick)="deleteEmployee(employee)" />
+                    </div>
                 </td>
             </tr>
         </ng-template>
         <ng-template pTemplate="summary">
             <div class="flex align-items-center justify-content-between">
-                In total there are {{ products ? products.length : 0 }} products.
+                In total there are {{ employees ? employees.length : 0 }} employees.
             </div>
         </ng-template>
     </p-table>
 
-    <p-dialog [(visible)]="productDialog" [style]="{ width: '450px' }" header="Product Details" [modal]="true"
+    <p-dialog [(visible)]="employeeDialog" [style]="{ width: '850px' }" header="Employee Details" [modal]="true"
         styleClass="p-fluid">
         <ng-template pTemplate="content">
-            <img
-                class="block m-auto pb-3" />
-            <div class="field">
-                <label for="name">Name</label>
-                <input type="text" pInputText id="name" [(ngModel)]="product.name" required autofocus />
-                <small class="p-error" *ngIf="submitted && !product.name">
-                    Name is required.
-                </small>
-            </div>
-            <div class="field">
-                <label for="description">Description</label>
-                <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3" cols="20">
-                    </textarea>
-            </div>
 
-            <div class="field">
-                <label for="inventoryStatus">Inventory Status</label>
-                <p-dropdown [(ngModel)]="product.inventoryStatus" inputId="inventoryStatus" [options]="statuses">
-                    <ng-template pTemplate="selectedItem">
-                        <!-- <p-tag [value]="product.inventoryStatus.toUpperCase()"
-                            [severity]="getSeverity(product.inventoryStatus.toUpperCase())" /> -->
-                    </ng-template>
-                    <ng-template let-option pTemplate="item">
-                        <p-tag [value]="option.label" [severity]="getSeverity(option.label)" />
-                    </ng-template>
-                </p-dropdown>
-            </div>
-
-            <div class="field">
-                <label class="mb-3">Category</label>
-                <div class="formgrid grid">
-                    <div class="field-radiobutton col-6">
-                        <p-radioButton id="category1" name="category" value="Accessories"
-                            [(ngModel)]="product.category" />
-                        <label for="category1">Accessories</label>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="employee-profile-img">
+                        <img src="../../../../assets/images/emp_img.jpg" alt="">
+                        <div class="employee-image-upload">
+                            <label for="file-input">
+                                <i class="pi pi-camera"></i>
+                            </label>
+                            <input id="file-input" type="file"/>
+                        </div>
                     </div>
-                    <div class="field-radiobutton col-6">
-                        <p-radioButton id="category2" name="category" value="Clothing" [(ngModel)]="product.category" />
-                        <label for="category2">Clothing</label>
+                </div>
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="field">
+                                <label for="fisrtName">First Name</label>
+                                <input type="text" pInputText id="fisrtName" [(ngModel)]="employee.fisrtName"
+                                    required />
+                                <small class="p-error" *ngIf="submitted && !employee.fisrtName">
+                                    First Name is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="field">
+                                <label for="middleName">Middle Name</label>
+                                <input type="text" pInputText id="middleName" [(ngModel)]="employee.middleName" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="field">
+                                <label for="lastName">Last Name</label>
+                                <input type="text" pInputText id="lastName" [(ngModel)]="employee.lastName" required />
+                                <small class="p-error" *ngIf="submitted && !employee.lastName">
+                                    Last Name is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="field">
+                                <label for="contactNummer">Contact Nummer</label>
+                                <input type="text" pInputText id="contactNummer" [(ngModel)]="employee.contactNummer"
+                                    required />
+                                <small class="p-error" *ngIf="submitted && !employee.contactNummer">
+                                    Contact Nummer is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="field">
+                                <label for="EmergencyContactNummer">Emergency Contact Nummer</label>
+                                <input type="text" pInputText id="EmergencyContactNummer"
+                                    [(ngModel)]="employee.EmergencyContactNummer" required />
+                                <small class="p-error" *ngIf="submitted && !employee.EmergencyContactNummer">
+                                    Emergency Contact Nummer is required.
+                                </small>
+                            </div>
+                        </div>
                     </div>
-                    <div class="field-radiobutton col-6">
-                        <p-radioButton id="category3" name="category" value="Electronics"
-                            [(ngModel)]="product.category" />
-                        <label for="category3">Electronics</label>
+                </div>
+                <div class="col-md-6">
+                    <div class="field">
+                        <label for="address">Address</label>
+                        <textarea id="address" pInputTextarea [(ngModel)]="employee.address" required rows="3" cols="20">
+                            </textarea>
+                        <small class="p-error" *ngIf="submitted && !employee.address">
+                            Address is required.
+                        </small>
                     </div>
-                    <div class="field-radiobutton col-6">
-                        <p-radioButton id="category4" name="category" value="Fitness" [(ngModel)]="product.category" />
-                        <label for="category4">Fitness</label>
+                </div>
+                <div class="col-md-6">
+                    <div class="field">
+                        <label for="permenantAddress">Permenant Address</label>
+                        <textarea id="permenantAddress" pInputTextarea [(ngModel)]="employee.permenantAddress" rows="3" cols="20">
+                            </textarea>
+                    </div>
+                </div>
+               
+                <div class="col-md-6">
+                    <div class="field">
+                        <label for="experienceBagManufacturingDetails">Bag Manufacturing Experience (if any)</label>
+                        <textarea id="experienceBagManufacturingDetails" pInputTextarea
+                            [(ngModel)]="employee.experienceBagManufacturingDetails" rows="3" cols="20">
+                            </textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="field">
+                        <label for="experienceSewingMachineDetails">Sewing Machine Experience (if any)</label>
+                        <textarea id="experienceSewingMachineDetails" pInputTextarea
+                            [(ngModel)]="employee.experienceSewingMachineDetails" rows="3" cols="20">
+                            </textarea>
                     </div>
                 </div>
             </div>
 
-            <div class="formgrid grid">
-                <div class="field col">
-                    <label for="price">Price</label>
-                    <p-inputNumber id="price" [(ngModel)]="product.price" mode="currency" currency="USD"
-                        locale="en-US" />
-                </div>
-                <div class="field col">
-                    <label for="quantity">Quantity</label>
-                    <p-inputNumber id="quantity" [(ngModel)]="product.quantity" />
-                </div>
-            </div>
+
         </ng-template>
 
         <ng-template pTemplate="footer">
             <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
-            <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveProduct()" />
+            <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveEmployee()" />
         </ng-template>
     </p-dialog>
 

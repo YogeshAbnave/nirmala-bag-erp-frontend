@@ -1,0 +1,40 @@
+.employee-profile-img img{
+    height: 170px;
+    width: 160px;
+    object-fit: cover;
+    object-position: center;
+    border: 2px solid #f0f0f0;
+    border-radius: 10px;
+    padding: 4px;
+}
+
+.employee-profile-img{
+    position: relative;
+}
+
+.employee-image-upload > input
+{
+    display: none;
+}
+
+.employee-image-upload i
+{
+    position: absolute;
+    right: 9px;
+    bottom: 18px;
+    font-size: 15px;
+    height: 30px;
+    width: 30px;
+    background-color: #fff;
+    padding: 5px;
+    border: 2px solid #f0f0f0;
+    border-radius: 30px;
+    cursor: pointer;
+}
+
+
+.employee-image-upload i:hover{
+    background-color: #f0f0f0;
+}
+
+  

@@ -21039,3 +21039,89 @@ a#x__NEXT__X {
 .place-content-center {
   place-content: center;
 }
+
+.header-area {
+  position: sticky;
+  top: 0;
+  z-index: 9;
+  border: 1px solid #f0f0f0;
+}
+
+.dragged-dashboard .main {
+  padding-left: 100px;
+}
+
+.dragged-dashboard .sidebar_logo{
+  visibility: hidden;
+}
+
+.dragged-dashboard .sidebar_main {
+  width: 85px !important;
+  z-index: 9;
+}
+
+.dragged-dashboard .sidebar_main .admin-info  {
+  width: 85px !important;
+  padding: 15px 15px !important;
+}
+
+.dragged-dashboard .menu-item{
+  position: relative;
+  z-index: 9;
+}
+
+.dragged-dashboard .menu-item .title {
+  opacity: 0;
+  transition: 0.4s;
+  position: absolute;
+  left: 48px;
+  top: 7px;
+  padding: 4px 10px;
+  background-color: #ffffff;
+  border-radius: 7px;
+  font-size: 14px;
+  border: 1px solid #f0f0f0;
+}
+
+.dragged-dashboard .menu-item:hover .title{
+  opacity: 1;
+  transition: 0.4s;
+}
+
+.dragged-dashboard .admin-info .place-content-center{
+  display: none;
+}
+
+/* Table grid common style */
+
+.p-toolbar{
+  background-color: #fff;
+  border: unset;
+}
+
+.p-toolbar .card{
+  border: 1px solid #f0f0f0;
+}
+
+.p-confirm-dialog .p-dialog-footer{
+  gap: 15px;
+  display: flex;
+  justify-content: end;
+}
+
+.grid-btns{
+  gap: 15px;
+  display: flex;
+  justify-content: end;
+}
+
+.grid-btns button{
+  border-radius: 30px;
+    padding: 8px;
+    height: 35px;
+    width: 35px;
+}
+
+.field{
+  margin-bottom: 15px;
+}

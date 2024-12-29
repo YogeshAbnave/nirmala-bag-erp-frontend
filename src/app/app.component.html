@@ -1,15 +1,16 @@
-<!-- Show header and sidebar when applicable -->
 <div *ngIf="showHeaderAndSidebar">
-  <div class="d-flex">
-    <app-sidebar *ngIf="showSidebar"></app-sidebar>  <!-- SidebarComponent -->
+  <div class="d-flex nb-dashboard" [ngClass]="{ 'dragged-dashboard': toggleClass }">
+    <app-sidebar *ngIf="showSidebar"></app-sidebar> <!-- SidebarComponent -->
     <div class="main content">
-      <app-header *ngIf="showHeaderAndSidebar"></app-header>  <!-- HeaderComponent -->
-      <router-outlet></router-outlet>  <!-- Angular Router Outlet -->
+      <app-header 
+        *ngIf="showHeaderAndSidebar" 
+        (dragSidebarClassEvent)="dragSidebarToggleClass()"
+      ></app-header> <!-- HeaderComponent -->
+      <router-outlet></router-outlet> <!-- Angular Router Outlet -->
     </div>
   </div>
 </div>
 
-<!-- Show only router-outlet for routes like /login -->
 <div *ngIf="!showHeaderAndSidebar">
-  <router-outlet></router-outlet>  <!-- Angular Router Outlet for login route -->
+  <router-outlet></router-outlet> <!-- Angular Router Outlet for login route -->
 </div>

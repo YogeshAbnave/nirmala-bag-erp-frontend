@@ -13,39 +13,42 @@
 </div> -->
 
 <div class="container-fluid">
-    <div class="main-content d-flex flex-column px-0">
+  <div class="main-content d-flex flex-column px-0">
 
-        <div class="m-auto mw-510 py-5">
-            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-                <div class="d-flex align-items-center gap-4">
-                  <h4 class="fs-3 mb-0">Welcome Back, To</h4>
-                </div>
-                <div class="d-flex align-items-center gap-4 mb-3">
-                  <img class="w-50" src="../../../../assets/images/nb-logo.png" alt="logo">
-                </div>
-              
-                <div class="card bg-white border-0 rounded-10 mb-4">
-                  <div class="card-body p-4">
-                    <div class="form-group mb-4">
-                      <label class="label">Email</label>
-                      <input formControlName="email" type="email" class="form-control h-58" placeholder="Enter Email">
-                    </div>
-                    <div class="form-group mb-0">
-                      <label class="label">Password</label>
-                      <div class="form-group">
-                        <div class="password-wrapper position-relative">
-                          <input formControlName="password" type="password" id="password" placeholder="Enter Password" class="form-control h-58 text-dark">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <button class="btn btn-primary fs-16 fw-semibold text-dark heading-fornt py-2 py-md-3 px-4 text-white w-100">
-                  Login
-                </button>
-              </form>
-              
+    <div class="m-auto mw-510 py-5">
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="d-flex align-items-center gap-4">
+          <h4 class="fs-3 mb-0">Welcome Back, To</h4>
+        </div>
+        <div class="d-flex align-items-center gap-4 mb-3">
+          <img class="w-50" src="../../../../assets/images/nb-logo.png" alt="logo">
         </div>
 
+        <div class="card bg-white border-0 rounded-10 mb-4">
+          <div class="card-body p-4">
+            <div class="form-group mb-4">
+              <label class="label">Email</label>
+              <input formControlName="email" type="email" class="form-control h-58" placeholder="Enter Email">
+            </div>
+            <div class="form-group mb-0">
+              <label class="label">Password</label>
+              <div class="form-group">
+                <div class="password-wrapper position-relative">
+                  <input formControlName="password" type="password" id="password" placeholder="Enter Password"
+                    class="form-control h-58 text-dark">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          class="btn btn-primary fs-16 fw-semibold text-dark heading-fornt py-2 py-md-3 px-4 text-white w-100 d-flex justify-content-center align-items-center"
+          [disabled]="loading">
+          <span *ngIf="loading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+          <span>{{ loading ? 'Logging In...' : 'Login' }}</span>
+        </button>
+
+      </form>
     </div>
+  </div>
 </div>

@@ -20,18 +20,24 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { EmployeeService } from '../employee.service';
 import { Table } from 'primeng/table';
 
-interface Product {
+interface Employee {
   id?: string;
-  name?: string;
-  description?: string;
-  price?: number;
-  category?: string;
-  quantity?: number;
-  inventoryStatus?: string;
-  rating?: number;
+  fisrtName?: string;
+  middleName?: string;
+  lastName?: string;
+  contactNummer?: string;
+  EmergencyContactNummer?: string;
+  address?: string;
+  permenantAddress?: string;
+  experienceBagManufacturing?: string;
+  experienceBagManufacturingDetails?: string;
+  experienceSewingMachine?: string;
+  experienceSewingMachineDetails?: string;
+  status?: string;
+  joiningDate?: string;
+  skillSet?: string;
+  designation?: string;
 }
-
-
 
 @Component({
   selector: 'app-employee',
@@ -53,142 +59,183 @@ interface Product {
     TagModule,
     RadioButtonModule,
     RatingModule,
-    InputNumberModule
+    InputNumberModule,
   ],
   providers: [MessageService, ConfirmationService],
   styles: [
-    `:host ::ng-deep .p-dialog .product-image {
-      width: 150px;
-      margin: 0 auto 2rem auto;
-      display: block;
-    }`
+    `
+      :host ::ng-deep .p-dialog .employee-image {
+        width: 150px;
+        margin: 0 auto 2rem auto;
+        display: block;
+      }
+    `,
   ],
   templateUrl: './employee.component.html',
-  styleUrls: ['./employee.component.css']
+  styleUrls: ['./employee.component.css'],
 })
-export class EmployeeComponent implements OnInit{
-    @ViewChild('dt') table!: Table;
-    productDialog: boolean = false;
-    products!: Product[];
-    product!: Product;
-    selectedProducts!: Product[] | null;
-    submitted: boolean = false;
-    statuses!: any[];
+export class EmployeeComponent implements OnInit {
+  @ViewChild('dt') table!: Table;
+  employeeDialog: boolean = false;
+  employees!: Employee[];
+  employee!: Employee;
+  selectedEmployees!: Employee[] | null;
+  submitted: boolean = false;
+  statuses!: any[];
 
-    constructor(private employeeService: EmployeeService, private messageService: MessageService, private confirmationService: ConfirmationService) {}
+  isLoading = false;
 
-    ngOnInit() {
-        this.employeeService.getProducts().then((data) => (this.products = data));
+  constructor(
+    private employeeService: EmployeeService,
+    private messageService: MessageService,
+    private confirmationService: ConfirmationService
+  ) {}
 
-        this.statuses = [
-            { label: 'INSTOCK', value: 'instock' },
-            { label: 'LOWSTOCK', value: 'lowstock' },
-            { label: 'OUTOFSTOCK', value: 'outofstock' }
-        ];
-    }
+  ngOnInit() {
+    // this.employeeService.getEmployees().then((data) => (this.employees = data));
 
-    openNew() {
-        this.product = {};
-        this.submitted = false;
-        this.productDialog = true;
-    }
+    this.isLoading = true;
 
-    applyFilterGlobal(event: Event) {
-        const input = event.target as HTMLInputElement;
-        const value = input.value;
-        this.table.filterGlobal(value, 'contains');
+    this.employeeService.getEmployees().then((data) => {
+      // Once data is fetched, hide the preloader and assign the data
+      this.isLoading = false;
+      this.employees = data;
+    }).catch(() => {
+      // Handle error and stop the preloader in case of failure
+      this.isLoading = false;
+      // You can add error handling logic here
+    });
+
+    this.statuses = [
+      { label: 'INSTOCK', value: 'instock' },
+      { label: 'LOWSTOCK', value: 'lowstock' },
+      { label: 'OUTOFSTOCK', value: 'outofstock' },
+    ];
+  }
+
+  openNew() {
+    this.employee = {};
+    this.submitted = false;
+    this.employeeDialog = true;
+  }
+
+  applyFilterGlobal(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const value = input.value;
+    this.table.filterGlobal(value, 'contains');
+  }
+
+  deleteSelectedEmployees() {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete the selected employees?',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.employees = this.employees.filter(
+          (val) => !this.selectedEmployees?.includes(val)
+        );
+        this.selectedEmployees = null;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Employees Deleted',
+          life: 3000,
+        });
+      },
+    });
+  }
+
+  editEmployee(employee: Employee) {
+    this.employee = { ...employee };
+    this.employeeDialog = true;
+  }
+
+  deleteEmployee(employee: Employee) {
+    this.confirmationService.confirm({
+      message: 'Are you sure you want to delete',
+      header: 'Confirm',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.employees = this.employees.filter((val) => val.id !== employee.id);
+        this.employee = {};
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Employee Deleted',
+          life: 3000,
+        });
+      },
+    });
+  }
+
+  hideDialog() {
+    this.employeeDialog = false;
+    this.submitted = false;
+  }
+
+  saveEmployee() {
+    this.submitted = true;
+
+    if (this.employee.fisrtName?.trim()) {
+      if (this.employee.id) {
+        this.employees[this.findIndexById(this.employee.id)] = this.employee;
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Employee Updated',
+          life: 3000,
+        });
+      } else {
+        this.employee.id = this.createId();
+        // this.employee.image = 'employee-placeholder.svg';
+        this.employees.push(this.employee);
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Employee Created',
+          life: 3000,
+        });
       }
 
-    deleteSelectedProducts() {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete the selected products?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.products = this.products.filter((val) => !this.selectedProducts?.includes(val));
-                this.selectedProducts = null;
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Products Deleted', life: 3000 });
-            }
-        });
+      this.employees = [...this.employees];
+      this.employeeDialog = false;
+      this.employee = {};
     }
+  }
 
-    editProduct(product: Product) {
-        this.product = { ...product };
-        this.productDialog = true;
-    }
-
-    deleteProduct(product: Product) {
-        this.confirmationService.confirm({
-            message: 'Are you sure you want to delete ' + product.name + '?',
-            header: 'Confirm',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => {
-                this.products = this.products.filter((val) => val.id !== product.id);
-                this.product = {};
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Deleted', life: 3000 });
-            }
-        });
-    }
-
-    hideDialog() {
-        this.productDialog = false;
-        this.submitted = false;
-    }
-
-    saveProduct() {
-        this.submitted = true;
-
-        if (this.product.name?.trim()) {
-            if (this.product.id) {
-                this.products[this.findIndexById(this.product.id)] = this.product;
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Updated', life: 3000 });
-            } else {
-                this.product.id = this.createId();
-                // this.product.image = 'product-placeholder.svg';
-                this.products.push(this.product);
-                this.messageService.add({ severity: 'success', summary: 'Successful', detail: 'Product Created', life: 3000 });
-            }
-
-            this.products = [...this.products];
-            this.productDialog = false;
-            this.product = {};
-        }
-    }
-
-    findIndexById(id: string): number {
-        let index = -1;
-        for (let i = 0; i < this.products.length; i++) {
-            if (this.products[i].id === id) {
-                index = i;
-                break;
-            }
-        }
-
-        return index;
-    }
-
-    createId(): string {
-        let id = '';
-        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        for (var i = 0; i < 5; i++) {
-            id += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return id;
-    }
-
-    getSeverity(status: string): "success" | "warning" | "danger" | undefined {
-        switch (status) {
-          case 'INSTOCK':
-            return 'success';
-          case 'LOWSTOCK':
-            return 'warning';
-          case 'OUTOFSTOCK':
-            return 'danger';
-          default:
-            return undefined;
-        }
+  findIndexById(id: string): number {
+    let index = -1;
+    for (let i = 0; i < this.employees.length; i++) {
+      if (this.employees[i].id === id) {
+        index = i;
+        break;
       }
+    }
+
+    return index;
+  }
+
+  createId(): string {
+    let id = '';
+    var chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < 5; i++) {
+      id += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return id;
+  }
+
+  getSeverity(status: string): 'success' | 'warning' | 'danger' | undefined {
+    switch (status) {
+      case 'INSTOCK':
+        return 'success';
+      case 'LOWSTOCK':
+        return 'warning';
+      case 'OUTOFSTOCK':
+        return 'danger';
+      default:
+        return undefined;
+    }
+  }
 
 }
-
-
