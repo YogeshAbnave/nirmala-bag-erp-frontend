@@ -4,6 +4,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 @NgModule({
  
@@ -15,6 +16,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
       ReactiveFormsModule,
       CommonModule,
       HttpClientModule,
+      NgMultiSelectDropDownModule.forRoot()
     ],
   declarations: [
   ],

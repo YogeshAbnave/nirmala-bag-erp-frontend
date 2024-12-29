@@ -21113,6 +21113,13 @@ a#x__NEXT__X {
   gap: 10px;
   display: flex;
   justify-content: end;
+  opacity: 0;
+  transition: 0.3s;
+}
+
+tr:hover .grid-btns{
+  opacity: 1;
+  transition: 0.3s;
 }
 
 .grid-btns button{

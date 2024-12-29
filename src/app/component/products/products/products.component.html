@@ -15,7 +15,7 @@
             <button (click)="openNew()"
                 class="border-0 btn btn-primary py-2 px-3 px-sm-4 text-white fs-14 fw-semibold rounded-3"
                 data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-                    <span>+ Add New Product</span>
+                <span>+ Add New Product</span>
             </button>
         </ng-template>
     </p-toolbar>
@@ -84,30 +84,49 @@
         <ng-template pTemplate="content">
 
             <div class="row">
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <div class="product-profile-img">
-                        <img src="../../../../assets/images/emp_img.jpg" alt="">
+                        <img src="../../../../assets/images/img_placeholder.webp" alt="">
                         <div class="product-image-upload">
                             <label for="file-input">
                                 <i class="pi pi-camera"></i>
                             </label>
-                            <input id="file-input" type="file"/>
+                            <input id="file-input" type="file" />
+                        </div>
+                    </div>
+                    <div class="product_secondary_imgs">
+                        <div class="product-secondary-imgs-item">
+                            <img src="../../../../assets/images/img_placeholder.webp" alt="">
+                        </div>
+                        <div class="product-secondary-image-upload">
+                            <label for="file-input">
+                                <i class="pi pi-plus"></i>
+                            </label>
+                            <input id="file-input" type="file" />
                         </div>
                     </div>
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-12">
                             <div class="field">
                                 <label for="name">Product Name</label>
-                                <input type="text" pInputText id="name" [(ngModel)]="product.name"
-                                    required />
+                                <input type="text" pInputText id="name" [(ngModel)]="product.name" required />
                                 <small class="p-error" *ngIf="submitted && !product.name">
                                     Product Name is required.
                                 </small>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
+                            <div class="field">
+                                <label for="price">Price</label>
+                                <input type="text" pInputText id="price" required [(ngModel)]="product.price" />
+                                <small class="p-error" *ngIf="submitted && !product.price">
+                                    Price is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="field">
                                 <label for="price">Price</label>
                                 <input type="text" pInputText id="price" required [(ngModel)]="product.price" />
@@ -119,7 +138,10 @@
                         <div class="col-md-6">
                             <div class="field">
                                 <label for="category">Category</label>
-                                <input type="text" pInputText id="category" [(ngModel)]="product.category" required />
+                                <ng-multiselect-dropdown [placeholder]="'custom placeholder'"
+                                    [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems"
+                                    (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
+                                </ng-multiselect-dropdown>
                                 <small class="p-error" *ngIf="submitted && !product.category">
                                     Category is required.
                                 </small>
@@ -128,7 +150,8 @@
                         <div class="col-md-6">
                             <div class="field">
                                 <label for="subCategory">Sub Category</label>
-                                <input type="text" pInputText id="subCategory" [(ngModel)]="product.subCategory" required />
+                                <input type="text" pInputText id="subCategory" [(ngModel)]="product.subCategory"
+                                    required />
                                 <small class="p-error" *ngIf="submitted && !product.subCategory">
                                     Sub Category is required.
                                 </small>
@@ -139,8 +162,7 @@
                 <div class="col-md-12">
                     <div class="field">
                         <label for="description">Description</label>
-                        <textarea id="description" pInputTextarea [(ngModel)]="product.description" required rows="3" cols="20">
-                            </textarea>
+                        <p-editor [(ngModel)]="product.description" [style]="{ height: '320px' }" />
                         <small class="p-error" *ngIf="submitted && !product.description">
                             Description is required.
                         </small>
@@ -149,8 +171,7 @@
                 <div class="col-md-12">
                     <div class="field">
                         <label for="bestseller">Bestseller</label>
-                        <input type="text" pInputText id="bestseller" [(ngModel)]="product.bestseller"
-                            required />
+                        <input type="text" pInputText id="bestseller" [(ngModel)]="product.bestseller" required />
                         <small class="p-error" *ngIf="submitted && !product.bestseller">
                             Bestseller is required.
                         </small>
