@@ -33,6 +33,7 @@ interface Product {
   industry?: string;
   mobile?: number;
   updatedAt?: string;
+  landmark?: string;
 }
 
 @Component({
@@ -78,6 +79,7 @@ export class ClientComponent {
     selectedProducts!: Product[] | null;
     submitted: boolean = false;
     statuses!: any[];
+    Array = Array;
     constructor(private messageService: MessageService, private confirmationService: ConfirmationService, private clientService: ClientService) {}
 
     ngOnInit() {
@@ -124,8 +126,20 @@ export class ClientComponent {
         this.submitted = false;
     }
 
-    deleteProduct(e:any) {
+    deleteProduct(e: any) {
+      const confirmDelete = window.confirm('Are you sure you want to delete this product?');
       
+      if (confirmDelete) {
+        this.clientService.deleteData(e).subscribe(
+          (data: any) => {
+            console.log('Product deleted successfully');
+            this.fetchData(); // Refresh data after deletion
+          },
+          (error) => {
+            console.error('Error deleting product:', error);
+          }
+        );
+      }
     }
     saveProduct(){
 

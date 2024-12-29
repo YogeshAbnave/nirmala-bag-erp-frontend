@@ -16,4 +16,7 @@ export class ClientService {
   postData(data: any) {
     return this._httpService.POST('/xlsx/import/chunk', data);
   }
+  deleteData(id: string) {
+    return this._httpService.DELETE(`/xlsx/import/delete/${id}`);
+  }
 }

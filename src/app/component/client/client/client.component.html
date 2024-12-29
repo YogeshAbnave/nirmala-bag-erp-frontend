@@ -1,4 +1,4 @@
-<h1>Excel Data Management</h1>
+<h1>Client Data Management</h1>
 <input type="file" (change)="onFileChange($event)" />
 <button (click)="exportToExcel()">Export to Excel</button>
 <table *ngIf="excelData.length">
@@ -44,9 +44,9 @@
       </ng-template>
       <ng-template pTemplate="header">
           <tr>
-              <th style="width: 4rem">
+              <!-- <th style="width: 4rem">
                   <p-tableHeaderCheckbox />
-              </th>
+              </th> -->
               <th pSortableColumn="name" style="min-width:5rem">
                   Name <p-sortIcon field="name" />
               </th>
@@ -59,45 +59,45 @@
               <th pSortableColumn="address" style="min-width:5rem">
                   Address <p-sortIcon field="address" />
               </th>
-              <th pSortableColumn="industry">
-                Industry <p-sortIcon field="industry" />
-              </th>
               <th pSortableColumn="city">
                   City <p-sortIcon field="city" />
               </th>
+              <!-- <th pSortableColumn="industry">
+                Industry <p-sortIcon field="industry" />
+              </th> -->
             
               <th></th>
           </tr>
       </ng-template>
       <ng-template pTemplate="body" let-product>
           <tr>
-              <td>
+              <!-- <td>
                   <p-tableCheckbox [value]="product" />
-              </td>
-              <td>
+              </td> -->
+              <td  [title]="product.name">
                   {{ product.name }}
               </td>
-              <td>
-                {{ product.email }}
+              <td [title]="Array.isArray(product.email) ? product.email.join(', ') : product.email">
+                {{ Array.isArray(product.email) ? product.email[0] : product.email }}
+                <span *ngIf="Array.isArray(product.email) && product.email.length > 1">...</span>
               </td>
               <td>
                   {{ product.mobile }}
               </td>
-              <td>
+              <td  [title]="product.address">
                   {{ product.address }}
               </td>
-              <td>
+              <td  [title]="product.landmark">
+                {{ product.city }}-{{ product.landmark }}
+              </td>
+              <!-- <td>
                 {{ product.industry }}
-              </td>
-              <td>
-                {{ product.city }}
-              </td>
-             
+              </td> -->
               <td>
                   <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" severity="success"
                       (onClick)="editProduct(product)" />
                   <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
-                      (onClick)="deleteProduct(product)" />
+                      (onClick)="deleteProduct(product._id)" />
               </td>
           </tr>
       </ng-template>
@@ -140,10 +140,9 @@
         </div>
 
         <div class="field">
-          <label for="address">Industry</label>
-          <input id="address" pInputText [(ngModel)]="product.industry" required rows="3" cols="20"/>
+          <label for="landmark">Landmark</label>
+          <input id="landmark" pInputText [(ngModel)]="product.landmark" required rows="3" cols="20"/>
       </div>
-
       <div class="field">
         <label for="city">City</label>
         <input type="text" pInputText id="city" [(ngModel)]="product.city" required autofocus />
