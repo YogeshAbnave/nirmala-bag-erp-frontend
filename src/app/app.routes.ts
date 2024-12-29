@@ -5,9 +5,10 @@ import { AuthGuard, LoginGuard } from './shared/_authguard/auth.guard';
 import { DashboardComponent } from './component/dashboard/dashboard/dashboard.component';
 import { EmployeeComponent } from './component/employee/employee/employee.component';
 import { OrderComponent } from './component/order/order/order.component';
-import { ProductComponent } from './component/product/product/product.component';
+import { ProductsComponent } from './component/products/products/products.component';
 import { SettingComponent } from './component/setting/setting/setting.component';
-import { ClientComponent } from './component/client/client/client.component';
+import { ContactsComponent } from './component/contacts/contacts/contacts.component';
+import { CustomersComponent } from './component/customers/customers/customers.component';
 export const routes: Routes = [
     {
         path: "",
@@ -18,9 +19,10 @@ export const routes: Routes = [
     { path: 'dashboard', component: DashboardComponent, canActivateChild: [AuthGuard] },
     { path: 'employees', component: EmployeeComponent,canActivateChild: [AuthGuard] },
     { path: 'order', component: OrderComponent,canActivateChild: [AuthGuard] },
-    { path: 'product', component: ProductComponent, canActivateChild: [AuthGuard] },
+    { path: 'products', component: ProductsComponent, canActivateChild: [AuthGuard] },
     { path: 'setting',component: SettingComponent, canActivateChild: [AuthGuard] },
-    { path: 'client', component: ClientComponent, canActivateChild: [AuthGuard] },
+    { path: 'contacts', component: ContactsComponent, canActivateChild: [AuthGuard] },
+    { path: 'customers', component: CustomersComponent, canActivateChild: [AuthGuard] },
 
 ];
 

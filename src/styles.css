@@ -21110,7 +21110,7 @@ a#x__NEXT__X {
 }
 
 .grid-btns{
-  gap: 15px;
+  gap: 10px;
   display: flex;
   justify-content: end;
 }
@@ -21124,4 +21124,8 @@ a#x__NEXT__X {
 
 .field{
   margin-bottom: 15px;
+}
+
+.p-inputtext:focus{
+  box-shadow: unset;
 }

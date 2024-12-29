@@ -1,0 +1,206 @@
+<table *ngIf="excelData.length">
+    <thead>
+        <tr>
+            <th *ngFor="let header of headers">{{ header }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of excelData">
+            <td *ngFor="let cell of row">{{ cell }}</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<div class="card">
+    <p-toast />
+    <p-toolbar styleClass="gap-2">
+        <ng-template pTemplate="left">
+            <div class="flex align-items-center justify-content-between">
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="applyFilterGlobal($event)" placeholder="Search..." />
+                </span>
+            </div>
+        </ng-template>
+
+
+        <ng-template pTemplate="right">
+            <div class="d-flex gap-2">
+                <button  (click)="openNew()" class="btn btn-outline-primary fw-semibold py-2 px-3 px-sm-4 fs-14 fw-semibold rounded-3 hover-white">
+                        <span>+ Add New Customer</span>
+                </button>
+                <div class="customer-file-up-btn">
+                    <label for="file-input">
+                        <button class="border-0 btn btn-primary py-2 px-3 px-sm-4 text-white fs-14 fw-semibold rounded-3"
+                            data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                            <span class="py-sm-1 gap-2 d-flex">
+                                <i class="pi pi-file-plus"></i>
+                                <span>Import</span>
+                            </span>
+                        </button>
+                    </label>
+                    <input type="file" (change)="onFileChange($event)" />
+                </div>
+                <button class="btn btn-outline-primary fw-semibold py-2 px-3 px-sm-4 fs-14 fw-semibold rounded-3 hover-white" (click)="exportToExcel()">
+                    <span class="py-sm-1 gap-2 d-flex">
+                        <i class="pi pi-file-excel"></i>
+                        <span>Export</span>
+                    </span>
+                </button>
+            </div>
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [value]="customers" [rows]="10" [paginator]="true"
+        [globalFilterFields]="['name', 'email', 'mobile', 'status']" [(selection)]="selectedCustomers" [rowHover]="true"
+        dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true">
+        <ng-template pTemplate="header">
+            <tr>
+                <!-- <th style="width: 4rem">
+                  <p-tableHeaderCheckbox />
+              </th> -->
+                <th pSortableColumn="name" style="min-width:5rem">
+                    Name <p-sortIcon field="name" />
+                </th>
+                <th pSortableColumn="email" style="min-width:5rem">
+                    Email <p-sortIcon field="email" />
+                </th>
+                <th pSortableColumn="mobile">
+                    Mobile <p-sortIcon field="mobile" />
+                </th>
+                <th pSortableColumn="address" style="min-width:5rem">
+                    Address <p-sortIcon field="address" />
+                </th>
+                <th pSortableColumn="city">
+                    City <p-sortIcon field="city" />
+                </th>
+                <!-- <th pSortableColumn="industry">
+                Industry <p-sortIcon field="industry" />
+              </th> -->
+
+                <th></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-customer>
+            <tr>
+                <!-- <td>
+                  <p-tableCheckbox [value]="customer" />
+              </td> -->
+                <td [title]="customer.name">
+                    {{ customer.name }}
+                </td>
+                <td [title]="Array.isArray(customer.email) ? customer.email.join(', ') : customer.email">
+                    {{ Array.isArray(customer.email) ? customer.email[0] : customer.email }}
+                    <span *ngIf="Array.isArray(customer.email) && customer.email.length > 1">...</span>
+                </td>
+                <td>
+                    {{ customer.mobile }}
+                </td>
+                <td [title]="customer.address">
+                    {{ customer.address }}
+                </td>
+                <td [title]="customer.landmark">
+                    {{ customer.city }}-{{ customer.landmark }}
+                </td>
+                <!-- <td>
+                {{ customer.industry }}
+              </td> -->
+                <td>
+                        <div class="grid-btns">
+                            <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" severity="success"
+                            (onClick)="editCustomer(customer)" />
+                        <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                            (onClick)="deleteCustomer(customer._id)" />
+                        </div>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="summary">
+            <div class="flex align-items-center justify-content-between">
+                In total there are {{ customers ? customers.length : 0 }} customers.
+            </div>
+        </ng-template>
+    </p-table>
+
+    <p-dialog [(visible)]="customerDialog" [style]="{ width: '850px' }" header="Customer Details" [modal]="true"
+        styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <img class="block m-auto pb-3" />
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="field">
+                        <label for="name">Name</label>
+                        <input type="text" pInputText id="name" placeholder="Enter Name" [(ngModel)]="customer.name" required autofocus />
+                        <small class="p-error" *ngIf="submitted && !customer.name">
+                            Name is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="field">
+                        <label for="customer">Customer No.</label>
+                        <input id="customer" pInputText [(ngModel)]="customer.mobile" placeholder="Enter Customer No." required rows="3" cols="20" />
+                        <small class="p-error" *ngIf="submitted && !customer.name">
+                            Customer No. is required.
+                        </small>
+                    </div>
+        
+                </div>
+                <div class="col-md-4">
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input type="text" pInputText id="email" [(ngModel)]="customer.email" placeholder="Enter Email" required autofocus />
+                        <small class="p-error" *ngIf="submitted && !customer.email">
+                            Email is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="field">
+                        <label for="address">Address</label>
+                        <textarea id="address" pInputTextarea [(ngModel)]="customer.address" placeholder="Enter Address" required rows="3" cols="20">
+                        </textarea>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="field">
+                        <label for="landmark">Landmark</label>
+                        <input id="landmark" pInputText [(ngModel)]="customer.landmark" placeholder="Enter Landmark" required rows="3" cols="20" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="field">
+                        <label for="city">City</label>
+                        <input type="text" pInputText id="city" [(ngModel)]="customer.city" placeholder="Enter City" required autofocus />
+                        <small class="p-error" *ngIf="submitted && !customer.city">
+                            <Em></Em>City is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="field">
+                        <label for="discussion">Discussion Points</label>
+                        <textarea placeholder="Enter Discussion Points"  id="discussion" pInputTextarea rows="3" cols="20">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+           
+            
+            
+
+
+
+
+        </ng-template>
+
+        <ng-template pTemplate="footer">
+            <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+            <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveCustomer()" />
+        </ng-template>
+    </p-dialog>
+
+    <p-confirmDialog [style]="{ width: '450px' }" />
+</div>
