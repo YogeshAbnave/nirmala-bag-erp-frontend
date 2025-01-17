@@ -50,17 +50,15 @@ export class LoginComponent {
         (response: any) => {
           console.log("response", response);
           let sessionData = {
-            token: response.id,
+            token: response?.token,
             userId: response?.userId,
-            name: response?.user?.firstName + ' ' + response?.user?.lastName,
-            email: response?.user?.email,
-            profilePic: response?.user?.profilePic,
-            companyId: response?.user?.companyId
+            name: response?.name,
+            email: response?.email,
+            profilePic: response?.profilePic
           };
           this._commonService.setSession(sessionData);
-          this._commonService.setProfilePic(response?.user?.profilePic);
-          this._commonService.setUserName(response?.user?.firstName);
-          this._commonService.setUserNameLocal(response?.user?.firstName + ' ' + response?.user?.lastName);
+          this._commonService.setProfilePic(response?.profilePic);
+          this._commonService.setUserName(response?.name);
           this.router.navigate(['/dashboard']);
         },
         (error: any) => {

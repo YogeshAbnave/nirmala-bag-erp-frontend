@@ -6,7 +6,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { AppHeaderComponent } from './layout/header/header.component';
 import { SidebarComponent } from './layout/sidebar/sidebar.component'; // Import SidebarComponent
 import { filter } from 'rxjs/operators';
-import "primeicons/primeicons.css";
+// import "primeicons/primeicons.css";
 
 @Component({
   selector: 'app-root',

@@ -91,7 +91,7 @@ export class  CommonService {
 
   // Session code starts
   setSession(sessionData: any) {
-    window.localStorage.setItem("nirmala-bag-erp", this.encode(JSON.stringify(sessionData)));
+    window.localStorage.setItem("token", this.encode(JSON.stringify(sessionData)));
   }
 
   setVerifiedMail(sessionData: any) {
@@ -145,7 +145,7 @@ export class  CommonService {
   }
 
   deleteSession() {
-    localStorage.removeItem("ship-it-pro-session");
+    localStorage.removeItem("token");
     this.router.navigate(['/login']);
   }
 

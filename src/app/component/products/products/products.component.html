@@ -63,6 +63,11 @@
                     {{ product.size }}
                 </td>
                 <td>
+                  <div class="image-container">
+                      <img *ngFor="let image of product.images" [src]="image" alt="Product Image" class="product-image" />
+                  </div>
+              </td>
+                <td>
                     <div class="grid-btns">
                         <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" severity="success"
                             (onClick)="editProduct(product)" />
@@ -106,86 +111,107 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="field">
-                                <label for="name">Product Name</label>
-                                <input type="text" pInputText id="name" [(ngModel)]="product.name" required />
-                                <small class="p-error" *ngIf="submitted && !product.name">
-                                    Product Name is required.
-                                </small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="field">
-                                <label for="price">Price</label>
-                                <input type="text" pInputText id="price" required [(ngModel)]="product.price" />
-                                <small class="p-error" *ngIf="submitted && !product.price">
-                                    Price is required.
-                                </small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="field">
-                                <label for="price">Price</label>
-                                <input type="text" pInputText id="price" required [(ngModel)]="product.price" />
-                                <small class="p-error" *ngIf="submitted && !product.price">
-                                    Price is required.
-                                </small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="field">
-                                <label for="category">Category</label>
-                                <ng-multiselect-dropdown [placeholder]="'custom placeholder'"
-                                    [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems"
-                                    (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
-                                </ng-multiselect-dropdown>
-                                <small class="p-error" *ngIf="submitted && !product.category">
-                                    Category is required.
-                                </small>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="field">
-                                <label for="subCategory">Sub Category</label>
-                                <input type="text" pInputText id="subCategory" [(ngModel)]="product.subCategory"
-                                    required />
-                                <small class="p-error" *ngIf="submitted && !product.subCategory">
-                                    Sub Category is required.
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="field">
-                        <label for="description">Description</label>
-                        <p-editor [(ngModel)]="product.description" [style]="{ height: '320px' }" />
-                        <small class="p-error" *ngIf="submitted && !product.description">
-                            Description is required.
-                        </small>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="field">
-                        <label for="bestseller">Bestseller</label>
-                        <input type="text" pInputText id="bestseller" [(ngModel)]="product.bestseller" required />
-                        <small class="p-error" *ngIf="submitted && !product.bestseller">
-                            Bestseller is required.
-                        </small>
-                    </div>
-                </div>
+             
             </div>
 
 
         </ng-template>
 
-        <ng-template pTemplate="footer">
-            <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
-            <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveProduct()" />
-        </ng-template>
+        <ng-template pTemplate="content">
+            <form (ngSubmit)="onSubmit()" #productForm="ngForm">
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="product-profile-img">
+                    <img [src]="mainImagePreview || '../../../../assets/images/img_placeholder.webp'" alt="Main product image">
+                    <div class="product-image-upload">
+                      <label for="main-image-input">
+                        <i class="pi pi-camera"></i>
+                      </label>
+                      <input id="main-image-input" type="file" (change)="onMainImageSelect($event)" accept="image/*" />
+                    </div>
+                  </div>
+                  <div class="product_secondary_imgs">
+                    <div class="product-secondary-imgs-item" *ngFor="let preview of secondaryImagePreviews">
+                      <img [src]="preview" alt="Secondary product image">
+                    </div>
+                    <div class="product-secondary-image-upload">
+                      <label for="secondary-image-input">
+                        <i class="pi pi-plus"></i>
+                      </label>
+                      <input id="secondary-image-input" type="file" (change)="onSecondaryImageSelect($event)" accept="image/*" multiple />
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="col-md-6">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="field">
+                        <label for="name">Product Name</label>
+                        <input type="text" pInputText id="name" name="name" [(ngModel)]="product.name" required />
+                        <small class="p-error" *ngIf="submitted && !product.name">Product Name is required.</small>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="field">
+                        <label for="price">Price</label>
+                        <input type="text" pInputText id="price" name="price" required [(ngModel)]="product.price" />
+                        <small class="p-error" *ngIf="submitted && !product.price">Price is required.</small>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="field">
+                        <label for="price2">Alternative Price</label>
+                        <input type="text" pInputText id="price2" name="price2" required [(ngModel)]="product.sellingPrice" />
+                        <small class="p-error" *ngIf="submitted && !product.sellingPrice">Price is required.</small>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="field">
+                        <label for="category">Category</label>
+                        <ng-multiselect-dropdown name="category" [placeholder]="'custom placeholder'"
+                          [settings]="dropdownSettings" [data]="dropdownList" [(ngModel)]="selectedItems"
+                          (onSelect)="onItemSelect($event)" (onSelectAll)="onSelectAll($event)">
+                        </ng-multiselect-dropdown>
+                        <small class="p-error" *ngIf="submitted && !product.category">Category is required.</small>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="field">
+                        <label for="subCategory">Sub Category</label>
+                        <input type="text" pInputText id="subCategory" name="subCategory" [(ngModel)]="product.subCategory" required />
+                        <small class="p-error" *ngIf="submitted && !product.subCategory">Sub Category is required.</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="field">
+                    <label for="description">Description</label>
+                    <p-editor name="description" [(ngModel)]="product.description" [style]="{ height: '320px' }" />
+                    <small class="p-error" *ngIf="submitted && !product.description">Description is required.</small>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="field">
+                    <label for="bestseller">Bestseller</label>
+                    <input type="text" pInputText id="bestseller" name="bestseller" [(ngModel)]="product.bestseller" required />
+                    <small class="p-error" *ngIf="submitted && !product.bestseller">Bestseller is required.</small>
+                  </div>
+                </div>
+                
+                <div class="col-md-12 mt-3">
+                  <button pButton type="submit" label="Submit" class="p-button-primary"></button>
+                </div>
+                <!-- <ng-template pTemplate="footer">
+                    <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+                    <p-button label="Save"  icon="pi pi-check" [text]="true" (onClick)="saveProduct()" />
+                </ng-template> -->
+              </div>
+            </form>
+          </ng-template>
+
+      
     </p-dialog>
 
     <p-confirmDialog [style]="{ width: '450px' }" />

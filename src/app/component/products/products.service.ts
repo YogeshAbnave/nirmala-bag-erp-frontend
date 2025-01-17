@@ -1,23 +1,23 @@
 import { Injectable } from '@angular/core';
+import { HttpService } from '../http/http.service';
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  getProducts() {
-    return Promise.resolve([
-        {
-          name: 'Abhijeet',
-          description: 'Abhijeet',
-          price: '100',
-          image: '',
-          category: 'Abhijeet',
-          subCategory: 'Abhijeet',
-          size: 'Abhijeet',
-          bestseller: 'Abhijeet',
-      }
+  constructor(private _httpService: HttpService,) { }
 
 
-    ]);
+
+
+
+createProduct(product: any) {
+  console.log(product, 'products');
+  return this._httpService.POST('/product/add', product);
+}
+
+
+getAllProduct() {
+  return this._httpService.GET('/product/list');
 }
 
 

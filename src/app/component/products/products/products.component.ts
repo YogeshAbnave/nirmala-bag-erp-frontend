@@ -42,14 +42,16 @@ interface Product {
   designation?: string;
 
 
-  name?: string;
-description?: string;
-price?: string;
-image?: string;
-category?: string;
-subCategory?: string;
-size?: string;
-bestseller?: string;
+  name?: any;
+description?: any;
+price?: any;
+images?: File[];
+category?: any[];
+subCategory?: any;
+size?: any;
+bestseller?: any;
+isAvailable?:any;
+sellingPrice?:any;
 }
 
 @Component({
@@ -88,6 +90,7 @@ bestseller?: string;
   ],
   templateUrl: './products.component.html',
   styleUrls: ['./products.component.css'],
+  
 })
 export class ProductsComponent implements OnInit {
   @ViewChild('dt') table!: Table;
@@ -103,7 +106,10 @@ export class ProductsComponent implements OnInit {
   dropdownList: { item_id: number; item_text: string }[] = [];
   selectedItems = [];
   dropdownSettings: IDropdownSettings = {};
-
+  mainImage: any;
+  images: File[] = [];
+  mainImagePreview: string | null = null;
+  secondaryImagePreviews: string[] = [];
 
   constructor(
     private productService: ProductService,
@@ -112,25 +118,7 @@ export class ProductsComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // this.productService.getProducts().then((data) => (this.products = data));
-
     this.isLoading = true;
-
-    this.productService.getProducts().then((data) => {
-      // Once data is fetched, hide the preloader and assign the data
-      this.isLoading = false;
-      this.products = data;
-    }).catch(() => {
-      // Handle error and stop the preloader in case of failure
-      this.isLoading = false;
-      // You can add error handling logic here
-    });
-
-    this.statuses = [
-      { label: 'INSTOCK', value: 'instock' },
-      { label: 'LOWSTOCK', value: 'lowstock' },
-      { label: 'OUTOFSTOCK', value: 'outofstock' },
-    ];
 
     this.dropdownList = [
       { item_id: 1, item_text: 'Mumbai' },
@@ -149,13 +137,112 @@ export class ProductsComponent implements OnInit {
       itemsShowLimit: 3,
       allowSearchFilter: true,
     };
+    this.getProduct();
+
+  }
+
+  getProduct(){
+ this.productService.getAllProduct().subscribe({
+      next: (response:any) => {
+        console.log('Product created successfully', response);
+        this.isLoading = false;
+        this.products = response.data;
+      },
+      error: (error:any) => {
+        console.error('Error creating product', error);
+        // Handle error
+      }
+    })
+  }
+ 
+
+
+  onMainImageSelect(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      this.mainImage = file;
+      this.createImagePreview(file).then(preview => {
+        this.mainImagePreview = preview;
+      });
+    }
+  }
+
+  onSecondaryImageSelect(event: any) {
+    const files = event.target.files;
+    if (files) {
+      Array.from(files).forEach((file:any) => {
+        this.images.push(file);
+        this.createImagePreview(file).then(preview => {
+          this.secondaryImagePreviews.push(preview);
+        });
+      });
+    }
+  }
+
+  private createImagePreview(file: File): Promise<string> {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target?.result as string);
+      reader.readAsDataURL(file);
+    });
+  }
+
+  onSubmit() {
+    this.submitted = true;
+     // Prepare FormData object
+  const formData = new FormData();
+
+  // Append product details to FormData
+  formData.append('name', this.product.name);
+  formData.append('description', this.product.description);
+  formData.append('price', this.product.price);
+  formData.append('sellingPrice', this.product.sellingPrice);
+  formData.append('size', this.product.size || 'XL');
+  formData.append('category', "Men");
+  formData.append('subCategory', this.product.subCategory);
+  formData.append('bestseller', this.product.bestseller);
+  formData.append('isAvailable', this.product.isAvailable ? 'true' : 'false');
+
+   // Append images to FormData (one by one)
+   if (this.images && this.images.length > 0) {
+    this.images.forEach((image: File) => {
+      formData.append('images', image); // Add each file with the key 'images'
+    });
+  }
+
+  // Debug to ensure FormData is correctly populated
+  // for (const [key, value] of (formData as any).entries()) {
+  //   console.log(key, formData.get(key));
+  // }
+ 
+  // Make the API call
+  this.productService.createProduct(formData).subscribe({
+          next: (response:any) => {
+            console.log('Product created successfully', response);
+            // Handle success
+          },
+          error: (error:any) => {
+            console.error('Error creating product', error);
+            // Handle error
+          }
+        });
+  }
+
+   validateForm(): boolean {
+    return !!(this.product.name && 
+              this.product.price && 
+              // this.product.category.length && 
+              this.product.subCategory && 
+              this.product.description && 
+              this.mainImage);
   }
 
   onItemSelect(item: any) {
-    console.log(item);
+    // Handle category selection
   }
+
   onSelectAll(items: any) {
-    console.log(items);
+    // Handle select all categories
   }
 
   openNew() {
@@ -219,9 +306,10 @@ export class ProductsComponent implements OnInit {
   }
 
   saveProduct() {
+    debugger
     this.submitted = true;
 
-    if (this.product.fisrtName?.trim()) {
+    if (this.product.name?.trim()) {
       if (this.product.id) {
         this.products[this.findIndexById(this.product.id)] = this.product;
         this.messageService.add({
@@ -231,8 +319,8 @@ export class ProductsComponent implements OnInit {
           life: 3000,
         });
       } else {
-        this.product.id = this.createId();
-        // this.product.image = 'product-placeholder.svg';
+        this.images
+        this.product.images = this.images;
         this.products.push(this.product);
         this.messageService.add({
           severity: 'success',
