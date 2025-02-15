@@ -1,0 +1,196 @@
+<table *ngIf="excelData.length">
+        <thead>
+            <tr>
+                <th *ngFor="let header of headers">{{ header }}</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of excelData">
+                <td *ngFor="let cell of row">{{ cell }}</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    
+    <div class="card">
+        <p-toast />
+        <p-toolbar styleClass="gap-2">
+            <ng-template pTemplate="left">
+                <div class="flex align-items-center justify-content-between">
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="applyFilterGlobal($event)" placeholder="Search..." />
+                    </span>
+                </div>
+            </ng-template>
+    
+    
+            <ng-template pTemplate="right">
+                <div class="d-flex gap-2">
+                    <button (click)="openNew()"
+                        class="btn btn-outline-primary fw-semibold py-2 px-3 px-sm-4 fs-14 fw-semibold rounded-3 hover-white">
+                        <span>+ Add New Client</span>
+                    </button>
+                </div>
+            </ng-template>
+        </p-toolbar>
+    
+        <p-table #dt [value]="contacts" [rows]="10" [paginator]="true"
+            [globalFilterFields]="['name', 'email', 'mobile', 'status']" [(selection)]="selectedContacts" [rowHover]="true"
+            dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true">
+            <ng-template pTemplate="header">
+                <tr>
+                    <!-- <th style="width: 4rem">
+                      <p-tableHeaderCheckbox />
+                  </th> -->
+                    <th pSortableColumn="name" style="min-width:5rem">
+                        Name <p-sortIcon field="name" />
+                    </th>
+                    <th pSortableColumn="email" style="min-width:5rem">
+                        Email <p-sortIcon field="email" />
+                    </th>
+                    <th pSortableColumn="mobile">
+                        Mobile <p-sortIcon field="mobile" />
+                    </th>
+                    <th pSortableColumn="address" style="min-width:4rem">
+                        Address <p-sortIcon field="address" />
+                    </th>
+                    <th pSortableColumn="city">
+                        City <p-sortIcon field="city" />
+                    </th>
+                    <th></th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-client>
+                <tr>
+                    <td [title]="client.name">
+                        {{ client.name }}
+                    </td>
+                    <td [title]="Array.isArray(client.email) ? client.email.join(', ') : client.email">
+                        {{ Array.isArray(client.email) ? client.email[0] : client.email }}
+                        <span *ngIf="Array.isArray(client.email) && client.email.length > 1">...</span>
+                    </td>
+                    <td>
+                        {{ client.mobile }}
+                    </td>
+                    <td [title]="client.address">
+                        {{ client.address }}
+                    </td>
+                    <td [title]="client.landmark">
+                        {{ client.city }}-{{ client.landmark }}
+                    </td>
+                    <td>
+                        <div class="image-container">
+                            <img *ngFor="let image of client.imageUrls" [src]="image" alt="Product Image" class="product-image" />
+                        </div>
+                    </td>
+                    <td>
+                        <div class="grid-btns">
+                            <p-button title="Edit" icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" severity="info"
+                                (onClick)="editContact(client)" />
+                            <p-button title="Delete" icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                                (onClick)="deleteContact(client._id)" />
+                            <p-button title="Make Customer" icon="pi pi-verified" severity="success" [rounded]="true" [outlined]="true" />
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="summary">
+                <div class="flex align-items-center justify-content-between">
+                    In total there are {{ contacts ? contacts.length : 0 }} contacts.
+                </div>
+            </ng-template>
+        </p-table>
+    
+        <p-dialog [(visible)]="contactDialog" [style]="{ width: '850px' }" header="Client Details" [modal]="true"
+        styleClass="p-fluid">
+        <ng-template pTemplate="content">
+            <div class="row">
+                <!-- Image Upload & Preview -->
+                <div class="col-md-12 text-center">
+                    <img [src]="client.imagePreview ? client.imagePreview : client.imageUrls  || './assets/profile_icon.png'" alt="Client Image"
+                        class="img-fluid rounded mb-3" width="100" height="100" />
+                    <input type="file" (change)="onImageUpload($event)" accept="image/*" class="form-control mt-2" />
+                </div>
+    
+                <div class="col-md-4">
+                    <div class="field">
+                        <label for="name">Organization Name</label>
+                        <input type="text" pInputText id="name" placeholder="Enter Name" [(ngModel)]="client.name"
+                            required autofocus />
+                        <small class="p-error" *ngIf="submitted && !client.name">Name is required.</small>
+                    </div>
+                </div>
+    
+                <div class="col-md-4">
+                    <div class="field">
+                        <label for="client">Contact No.</label>
+                        <input id="client" pInputText [(ngModel)]="client.mobile" placeholder="Enter Contact No."
+                            required />
+                        <small class="p-error" *ngIf="submitted && !client.mobile">Contact No. is required.</small>
+                    </div>
+                </div>
+    
+                <div class="col-md-4">
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input type="text" pInputText id="email" [(ngModel)]="client.email" placeholder="Enter Email"
+                            required />
+                    </div>
+                </div>
+    
+                <div class="col-md-12">
+                    <div class="field">
+                        <label for="address">Address</label>
+                        <textarea id="address" pInputTextarea [(ngModel)]="client.address" placeholder="Enter Address"
+                            required rows="3" cols="20">
+                        </textarea>
+                    </div>
+                </div>
+    
+                <div class="col-md-4">
+                    <div class="field">
+                        <label for="landmark">Landmark</label>
+                        <input id="landmark" pInputText [(ngModel)]="client.landmark" placeholder="Enter Landmark" />
+                    </div>
+                </div>
+    
+                <div class="col-md-4">
+                    <div class="field">
+                        <label for="city">City</label>
+                        <input type="text" pInputText id="city" [(ngModel)]="client.city" placeholder="Enter City"
+                            required />
+                        <small class="p-error" *ngIf="submitted && !client.city">City is required.</small>
+                    </div>
+                </div>
+    
+                <div class="col-md-4">
+                    <div class="field">
+                        <label for="size">Bag Name and Size</label>
+                        <input type="text" pInputText id="size" [(ngModel)]="client.size"
+                            placeholder="Enter name and size" required />
+                        <small class="p-error" *ngIf="submitted && !client.size">Bag name and size is required.</small>
+                    </div>
+                </div>
+    
+                <div class="col-md-12">
+                    <div class="field">
+                        <label for="discussion">Discussion Points</label>
+                        <textarea placeholder="Enter Discussion Points" id="discussion" pInputTextarea
+                            [(ngModel)]="client.discussion" rows="3" cols="20">
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+        </ng-template>
+    
+        <ng-template pTemplate="footer">
+            <p-button label="Cancel" icon="pi pi-times" [text]="true" (onClick)="hideDialog()" />
+            <p-button label="Save" icon="pi pi-check" [text]="true" (onClick)="saveClient()" />
+        </ng-template>
+    </p-dialog>
+    
+    
+        <p-confirmDialog [style]="{ width: '450px' }" />
+    </div>

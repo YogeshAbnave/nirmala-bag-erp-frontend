@@ -9,6 +9,7 @@ import { ProductsComponent } from './component/products/products/products.compon
 import { SettingComponent } from './component/setting/setting/setting.component';
 import { ContactsComponent } from './component/contacts/contacts/contacts.component';
 import { CustomersComponent } from './component/customers/customers/customers.component';
+import { ClientComponent } from './component/clients/client/client.component';
 export const routes: Routes = [
     {
         path: "",
@@ -23,6 +24,7 @@ export const routes: Routes = [
     { path: 'setting',component: SettingComponent, canActivateChild: [AuthGuard] },
     { path: 'contacts', component: ContactsComponent, canActivateChild: [AuthGuard] },
     { path: 'customers', component: CustomersComponent, canActivateChild: [AuthGuard] },
+    { path: 'client', component: ClientComponent, canActivateChild: [AuthGuard] },
 
 ];
 

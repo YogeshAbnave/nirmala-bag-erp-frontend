@@ -1,0 +1,59 @@
+/* app.component.css */
+
+table {
+        width: 100%;
+      }
+    
+      /* app.component.css */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .search-container {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 16px;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    table {
+      width: 100%;
+    }
+    
+    th.mat-sort-header-sorted {
+      color: black;
+    }
+    
+    td {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 200px; /* Adjust as needed */
+    }
+    
+    td:hover {
+      cursor: pointer;
+    }
+
+.image-container {
+        display: flex;
+        gap: 8px; /* Adds space between images */
+      }
+    
+    .contact-file-up-btn > input
+    {
+        display: none;
+    }
+    
+    .product-image {
+        width: 50px; /* Adjust size as needed */
+        height: 50px; /* Make height equal to width for perfect circle */
+        object-fit: cover; /* Ensures the image fits within the circle */
+        border-radius: 50%; /* Makes the image circular */
+        border: 2px solid #ccc; /* Optional: Adds a border around the image */
+      }
